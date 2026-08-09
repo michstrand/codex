@@ -1,0 +1,4 @@
+interface:
+  display_name: "FotMob Team Stats"
+  short_description: "Extract FotMob league team stats to JSON"
+  default_prompt: "Use $fotmob-team-stats to parse a FotMob league team stats page into JSON."

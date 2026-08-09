@@ -1,0 +1,4 @@
+interface:
+  display_name: "Find Best Odds"
+  short_description: "Fill best 1X2 odds in match sheets"
+  default_prompt: "Use $find-best-odds to update best odds for all league tabs in my matches spreadsheet."

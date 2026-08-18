@@ -1,4 +1,5 @@
 interface:
   display_name: "Predict Match Values"
-  short_description: "Predict matches and update sheet status"
-  default_prompt: "Use $predict-match-values to process unfinished football matches into the predictions tab."
+  short_description: "Predict matches using prior recommendation history"
+  default_prompt: "Use $predict-match-values to process unfinished football matches, calibrate against previous recommendations in the predictions tab, and update the sheet safely."
+

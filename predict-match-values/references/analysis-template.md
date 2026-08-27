@@ -17,6 +17,16 @@ For each source row, capture:
 - The matching `latest_standings` league snapshot, including its embedded generation time or file modification time
 - Current table, expected-performance metrics, prior-season baseline when present, and relevant injuries or suspensions for both teams
 - Previous prediction rows with kickoff times earlier than the current match
+- The complete current policy files from `betting_agent_directions`
+
+## Market Calibration
+
+- Normalize the three market implied probabilities after removing overround.
+- Produce a raw `1/X/2` probability triplet summing to 100%.
+- Assign evidence quality and uncertainty flags before selecting a reliability weight.
+- Shrink every raw probability toward its market prior and calculate EV only from the calibrated triplet.
+- Run the required second shrinkage pass for unusually large raw edges.
+- Red-team every prospective bet and normally choose no more than one outcome.
 
 ## Local Standings Evidence
 
@@ -67,17 +77,10 @@ For each outcome:
 - `market odds.bookmaker`: bookmaker name
 - `market odds.implied probability`: percentage with one decimal when useful, such as `44.2%`
 - `recommendation`: include estimated true probability and EV edge
-- `recommendation`: also state how relevant prior recommendations affected confidence or say that history was not materially informative
-- `final verdict`: short action, such as `0 units`, `Lean only`, or `0.25 units`
+- `recommendation`: include normalized market prior, raw probability, reliability weight, calibrated probability, calibrated EV, red-team objection, and how prior recommendations affected confidence
+- `final verdict`: `BET` or `NO BET`; if betting, include stake as `% bankroll` plus pre-kickoff invalidation conditions
 
 ## EV Language
 
-Use this scale:
-
-- Negative EV: `Avoid` or `No bet`
-- 0% to +2% edge: `No bet` or `Lean only`; usually no stake
-- +2% to +5% edge: `Small positive EV`; usually 0.25 to 0.5 units
-- Above +5% edge: `Positive EV`; consider a stronger recommendation only if context supports it
-
-When model confidence is low, reduce staking even if the arithmetic edge is positive.
+Apply the action gates in the current `betting_agent_directions` files. Do not preserve an older threshold from this reference when the live policy changes. When model confidence is low, increase shrinkage and reduce or eliminate the stake even if raw arithmetic EV is positive.
 

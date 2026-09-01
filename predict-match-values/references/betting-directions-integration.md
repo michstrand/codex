@@ -23,7 +23,7 @@ For each match:
 9. Normally select no more than one outcome; `NO BET` is a valid successful result.
 10. State pre-kickoff invalidation conditions for any bet.
 
-## Mapping Into Predictions A:M
+## Mapping Into Predictions A:U
 
 Keep exactly three outcome rows. Encode the direction document's required information without changing the target schema:
 
@@ -31,6 +31,10 @@ Keep exactly three outcome rows. Encode the direction document's required inform
 - `market odds.implied probability`: the outcome's displayed raw implied percentage from its decimal odds; include the normalized market prior in `recommendation` so overround removal remains auditable.
 - `recommendation`: normalized market prior, raw model probability, reliability weight, calibrated probability, calibrated EV, and the red-team objection. State when a second shrinkage pass was triggered.
 - `final verdict`: `BET` or `NO BET`; for a bet, include stake as `% bankroll` and the specific conditions that would invalidate it before kickoff.
+- `Betting pct`: numeric bankroll percentage for the outcome. Use the selected stake for a `BET` and numeric `0` for every other outcome. Populate this field on all three rows.
+- `EV edge %`: calibrated EV in percentage points, not decimal form. For example, write `5.4` when `(calibrated_probability × odds) − 1 = 0.054`. Populate this field on all three rows, including zero and negative values.
+
+Leave settlement fields `result`, `home_team_score`, `away_team_score`, `Betting amount`, `Result`, and `Is Win` blank when the match has not yet settled. Do not omit the intervening columns when writing `Betting pct` and `EV edge %`.
 
 The three rows must use mutually coherent probability triplets. Do not calculate each outcome independently in a way that makes the raw or calibrated probabilities fail to sum to approximately 100%.
 
@@ -39,4 +43,3 @@ The three rows must use mutually coherent probability triplets. Do not calculate
 Use settled prediction history as temporary calibration evidence, not a permanent league ranking. Recompute current diagnostics from the workbook when feasible rather than copying historical values from the direction document indefinitely.
 
 Track performance by calibrated-EV band, odds band, league, outcome type, favorite/underdog status, and evidence grade. Prefer out-of-sample or rolling evidence. Do not materially change policy from fewer than 30 settled bets in a diagnostic group; require about 100 before a strong structural change unless the live directions specify otherwise.
-

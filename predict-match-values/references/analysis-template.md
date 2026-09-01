@@ -79,8 +79,9 @@ For each outcome:
 - `recommendation`: include estimated true probability and EV edge
 - `recommendation`: include normalized market prior, raw probability, reliability weight, calibrated probability, calibrated EV, red-team objection, and how prior recommendations affected confidence
 - `final verdict`: `BET` or `NO BET`; if betting, include stake as `% bankroll` plus pre-kickoff invalidation conditions
+- `Betting pct`: numeric bankroll percentage for every row; use the stake for the selected bet and `0` for all other outcomes
+- `EV edge %`: calibrated EV in percentage points for every row, including negative and zero values
 
 ## EV Language
 
 Apply the action gates in the current `betting_agent_directions` files. Do not preserve an older threshold from this reference when the live policy changes. When model confidence is low, increase shrinkage and reduce or eliminate the stake even if raw arithmetic EV is positive.
-

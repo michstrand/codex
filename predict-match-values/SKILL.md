@@ -11,9 +11,9 @@ The source match tabs are expected to follow this schema:
 
 `id`, `sport_key`, `sport_title`, `commence_time`, `home_team`, `away_team`, `bookmakers`, `done`, `result`, `home_goals`, `away_goals`, `best_odds_1`, `bookmaker_1`, `best_odds_X`, `bookmaker_X`, `best_odds_2`, `bookmaker_2`, `odds_found`.
 
-The target `predictions` tab is expected to use columns `A:M`:
+The target `predictions` tab is expected to use columns `A:U`:
 
-`id`, `sport_key`, `sport_title`, `commence_time`, `home_team`, `away_team`, `Context summary`, `market odds.outcome`, `market.odds.best.odds `, `market odds.bookmaker`, `market odds.implied probability`, `recommendation`, `final verdict`.
+`id`, `sport_key`, `sport_title`, `commence_time`, `home_team`, `away_team`, `Context summary`, `market odds.outcome`, `market.odds.best.odds `, `market odds.bookmaker`, `market odds.implied probability`, `recommendation`, `final verdict`, `result`, `home_team_score`, `away_team_score`, `Betting pct`, `Betting amount`, `Result`, `Is Win`, `EV edge %`.
 
 ## Workflow
 
@@ -48,9 +48,9 @@ The target `predictions` tab is expected to use columns `A:M`:
 14. Check temporal safety before relying on a file. For current-season snapshots without `generated_at`, use file modification time as the snapshot time; do not use them for a historical match that kicked off earlier. For `standings_2025.json`, `generated_at` is the extraction time, while `season_start_year` identifies the completed prior-season period; do not reject a legitimate prior-season baseline merely because it was exported later. Treat stale, incomplete, or temporally unsafe files as unavailable and lower confidence rather than silently using them.
 15. Retrieve missing or fresher contextual data with web search when needed. Prefer primary or reputable sources for team news, form, injuries, standings, schedules, and head-to-head context. Local absence lists are leads, not guaranteed match-day status: verify material absences when their return date is missing, ambiguous, or close to kickoff. Cite sources in the conversation if presenting the analysis to the user.
 16. Compare the new match with prior prediction rows before finalizing probabilities or stakes. Prefer same-league rows, recurring teams, similar favorite/underdog profiles, comparable implied-probability bands, and the same outcome. Treat history as calibration evidence, not as a substitute for current information.
-17. Produce exactly three prediction rows per match, one for each outcome `1`, `X`, and `2`; normally mark at most one outcome as `BET`.
+17. Produce exactly three prediction rows per match, one for each outcome `1`, `X`, and `2`; normally mark at most one outcome as `BET`. For every outcome row, populate `EV edge %` with the calibrated EV expressed in percentage points (for example, write `5.4` for 5.4% and `-2.1` for -2.1%). Populate `Betting pct` on every row: write the recommended bankroll percentage for a bet and numeric `0` for every `NO BET`, lean, or avoid recommendation. Never leave either field blank on a newly generated prediction row.
 18. Insert prediction rows into the first empty row of the `predictions` tab. Use `scripts/build_prediction_requests.py` to generate the `updateCells` request when convenient.
-19. Verify the inserted prediction rows by reading them back from the `predictions` tab.
+19. Verify the inserted prediction rows by reading them back from the `predictions` tab. Verification must include `EV edge %` and `Betting pct` for all three outcomes; treat a blank value in either field as a failed insertion and repair it before continuing.
 20. Only after successful verification, update the source match tab `done` column (`H`) to boolean `TRUE` for the processed source row.
 21. Verify the source `done` cells after writing.
 
@@ -108,4 +108,3 @@ The script prints JSON containing:
 - `done_requests`: requests to mark source rows done after verification.
 
 Apply `prediction_requests` first, verify, then apply `done_requests`.
-

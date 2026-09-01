@@ -24,7 +24,9 @@ Input JSON shape:
           "bookmaker": "Betfair",
           "implied_probability": "19.2%",
           "recommendation": "No bet...",
-          "final_verdict": "0 units..."
+          "final_verdict": "0 units...",
+          "betting_pct": 0,
+          "ev_edge_pct": -1.7
         }
       ]
     }
@@ -42,7 +44,7 @@ from pathlib import Path
 from typing import Any
 
 
-PREDICTION_COLUMNS = 13
+PREDICTION_COLUMNS = 21
 
 
 def column_to_index(column: str) -> int:
@@ -79,6 +81,14 @@ def prediction_row(match: dict[str, Any], outcome: dict[str, Any]) -> list[Any]:
         outcome.get("implied_probability", ""),
         outcome.get("recommendation", ""),
         outcome.get("final_verdict", ""),
+        "",  # result - populated after settlement
+        "",  # home_team_score - populated after settlement
+        "",  # away_team_score - populated after settlement
+        outcome.get("betting_pct", 0),
+        "",  # Betting amount - populated separately when used
+        "",  # Result - calculated/populated after settlement
+        "",  # Is Win - calculated/populated after settlement
+        outcome.get("ev_edge_pct", ""),
     ]
 
 
@@ -97,6 +107,16 @@ def build_requests(payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
                 f"Match {match.get('id', '<missing id>')} must have exactly 3 outcomes"
             )
         for outcome in outcomes:
+            if "ev_edge_pct" not in outcome or outcome["ev_edge_pct"] in (None, ""):
+                raise ValueError(
+                    f"Match {match.get('id', '<missing id>')} outcome "
+                    f"{outcome.get('outcome', '<missing outcome>')} requires ev_edge_pct"
+                )
+            if "betting_pct" not in outcome or outcome["betting_pct"] in (None, ""):
+                raise ValueError(
+                    f"Match {match.get('id', '<missing id>')} outcome "
+                    f"{outcome.get('outcome', '<missing outcome>')} requires betting_pct"
+                )
             prediction_rows.append(
                 {"values": [cell_value(value) for value in prediction_row(match, outcome)]}
             )

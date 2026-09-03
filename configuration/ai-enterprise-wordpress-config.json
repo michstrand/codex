@@ -1,0 +1,10 @@
+{
+  "WP_BASE_URL": "https://site.beachbot.dk",
+  "DEFAULT_AUTHOR_ID": 2,
+  "SITE_TIMEZONE": "Europe/Copenhagen",
+  "ARTICLE_LANGUAGE": "English",
+  "DEFAULT_CATEGORY_SLUG": "ai",
+  "SEO_PLUGIN": "none",
+  "IMAGE_STYLE": "Original modern editorial illustration, 16:9",
+  "IMAGE_RETRY_LIMIT": 2
+}

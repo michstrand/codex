@@ -1,0 +1,7 @@
+interface:
+  display_name: "AI Enterprise X Editorial"
+  short_description: "Turn trending AI architecture stories into drafts"
+  default_prompt: "Use $ai-enterprise-x-editorial to find a high-attention AI and enterprise architecture story on X and prepare a verified WordPress draft."
+
+policy:
+  allow_implicit_invocation: true

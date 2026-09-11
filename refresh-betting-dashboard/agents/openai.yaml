@@ -1,0 +1,4 @@
+interface:
+  display_name: "Refresh Betting Dashboard"
+  short_description: "Build and deploy dashboard betting picks"
+  default_prompt: "Use $refresh-betting-dashboard to refresh and deploy the latest betting picks."

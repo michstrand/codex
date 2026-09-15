@@ -26,7 +26,7 @@ For each source row, capture:
 - Assign evidence quality and uncertainty flags before selecting a reliability weight.
 - Shrink every raw probability toward its market prior and calculate EV only from the calibrated triplet.
 - Run the required second shrinkage pass for unusually large raw edges.
-- Red-team every prospective bet and normally choose no more than one outcome.
+- Red-team every prospective real or shadow bet and normally choose no more than one outcome.
 
 ## Local Standings Evidence
 
@@ -78,9 +78,11 @@ For each outcome:
 - `market odds.implied probability`: percentage with one decimal when useful, such as `44.2%`
 - `recommendation`: include estimated true probability and EV edge
 - `recommendation`: include normalized market prior, raw probability, reliability weight, calibrated probability, calibrated EV, red-team objection, and how prior recommendations affected confidence
-- `final verdict`: `BET` or `NO BET`; if betting, include stake as `% bankroll` plus pre-kickoff invalidation conditions
-- `Betting pct`: numeric bankroll percentage for every row; use the stake for the selected bet and `0` for all other outcomes
+- `final verdict`: `BET`, `SHADOW BET`, or `NO BET`. A real bet includes stake as `% bankroll` plus pre-kickoff invalidation conditions. A shadow bet states `hypothetical 0.25% bankroll; not placed` plus the invalidation conditions.
+- `recommended stake pct`: numeric bankroll percentage for every row; use the real stake for a selected `BET` and `0` for `SHADOW BET` and all other outcomes
 - `EV edge %`: calibrated EV in percentage points for every row, including negative and zero values
+
+For a `SHADOW BET`, also include `shadow stake 0.25%` in `recommendation`, keep `bet placed = FALSE`, and leave all actual-placement fields blank.
 
 ## EV Language
 
